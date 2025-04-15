@@ -154,10 +154,9 @@ export default function Home() {
       name: "Shyam Sharma",
       role: "@Interio",
       rating: 5,
-      content: "The team at Sanganak Premium delivered an exceptional design system that perfectly captures our brand's luxury essence.",
-      videoUrl: "/testimonials/shyam-sharma.mp4",
+      content: "The Sanganak team's expertise in luxury design transformed our digital presence. Their collaborative approach and attention to detail made the entire process seamless.",
       avatar: "/testimonials/headshots/shyam-sharma.jpg",
-      type: "video"
+      type: "text"
     },
     {
       name: "Shubham Kumar",
