@@ -129,58 +129,60 @@ export default function PricingSection() {
           viewport={{ once: true }}
           className="mt-16 mb-24 overflow-x-auto"
         >
-          <table className="w-full min-w-[800px] border-collapse">
-            <thead>
-              <tr className="border-b border-[#c6a255]/20">
-                <th className="py-4 px-6 text-left text-[#c6a255] font-medium">Features</th>
-                {plans.map((plan) => (
-                  <th key={plan.name} className="text-center py-4 px-6 text-[#c6a255] font-medium">
-                    {plan.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-[#c6a255]/10">
-                <td className="py-4 px-6 text-gray-300">Investment</td>
-                {plans.map((plan) => (
-                  <td key={plan.name} className="text-center py-4 px-6 text-gray-300">
-                    {plan.price}
-                  </td>
-                ))}
-              </tr>
-              <tr className="border-b border-[#c6a255]/10">
-                <td className="py-4 px-6 text-gray-300">Delivery Time</td>
-                {plans.map((plan) => (
-                  <td key={plan.name} className="text-center py-4 px-6 text-gray-300">
-                    {plan.slots}
-                  </td>
-                ))}
-              </tr>
-              <tr className="border-b border-[#c6a255]/10">
-                <td className="py-4 px-6 text-gray-300">Development</td>
-                {plans.map((plan) => (
-                  <td key={plan.name} className="text-center py-4 px-6 text-gray-300">
-                    {plan.name === "Essentials" && "Landing Page"}
-                    {plan.name === "Accelerator" && "Webflow/Shopify Website"}
-                    {plan.name === "Domination" && "Next.js + React Native"}
-                    {plan.name === "Elite" && "Custom Enterprise Software"}
-                  </td>
-                ))}
-              </tr>
-              <tr className="border-b border-[#c6a255]/10">
-                <td className="py-4 px-6 text-gray-300">Support</td>
-                {plans.map((plan) => (
-                  <td key={plan.name} className="text-center py-4 px-6 text-gray-300">
-                    {plan.name === "Essentials" && "Email Support"}
-                    {plan.name === "Accelerator" && "Email + Chat"}
-                    {plan.name === "Domination" && "Priority Support"}
-                    {plan.name === "Elite" && "24/7 Dedicated Support"}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+          <LuxuryCard className="p-0 overflow-hidden">
+            <table className="w-full min-w-[800px] border-collapse">
+              <thead>
+                <tr className="border-b border-[#c6a255]/20">
+                  <th className="py-4 px-6 text-left text-[#c6a255] font-medium border-r border-[#c6a255]/20 hover:bg-[#c6a255]/5 transition-colors duration-300">Features</th>
+                  {plans.map((plan, index) => (
+                    <th key={plan.name} className={`text-center py-4 px-6 text-[#c6a255] font-medium ${index !== plans.length - 1 ? 'border-r border-[#c6a255]/20' : ''} hover:bg-[#c6a255]/5 transition-colors duration-300`}>
+                      {plan.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-[#c6a255]/20">
+                  <td className="py-4 px-6 text-gray-300 border-r border-[#c6a255]/20 hover:bg-[#c6a255]/5 transition-colors duration-300">Investment</td>
+                  {plans.map((plan, index) => (
+                    <td key={plan.name} className={`text-center py-4 px-6 text-gray-300 ${index !== plans.length - 1 ? 'border-r border-[#c6a255]/20' : ''} hover:bg-[#c6a255]/5 transition-colors duration-300`}>
+                      {plan.price}
+                    </td>
+                  ))}
+                </tr>
+                <tr className="border-b border-[#c6a255]/20">
+                  <td className="py-4 px-6 text-gray-300 border-r border-[#c6a255]/20 hover:bg-[#c6a255]/5 transition-colors duration-300">Delivery Time</td>
+                  {plans.map((plan, index) => (
+                    <td key={plan.name} className={`text-center py-4 px-6 text-gray-300 ${index !== plans.length - 1 ? 'border-r border-[#c6a255]/20' : ''} hover:bg-[#c6a255]/5 transition-colors duration-300`}>
+                      {plan.slots}
+                    </td>
+                  ))}
+                </tr>
+                <tr className="border-b border-[#c6a255]/20">
+                  <td className="py-4 px-6 text-gray-300 border-r border-[#c6a255]/20 hover:bg-[#c6a255]/5 transition-colors duration-300">Development</td>
+                  {plans.map((plan, index) => (
+                    <td key={plan.name} className={`text-center py-4 px-6 text-gray-300 ${index !== plans.length - 1 ? 'border-r border-[#c6a255]/20' : ''} hover:bg-[#c6a255]/5 transition-colors duration-300`}>
+                      {plan.name === "Essentials" && "Landing Page"}
+                      {plan.name === "Accelerator" && "Webflow/Shopify Website"}
+                      {plan.name === "Domination" && "Next.js + React Native"}
+                      {plan.name === "Elite" && "Custom Enterprise Software"}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="py-4 px-6 text-gray-300 border-r border-[#c6a255]/20 hover:bg-[#c6a255]/5 transition-colors duration-300">Support</td>
+                  {plans.map((plan, index) => (
+                    <td key={plan.name} className={`text-center py-4 px-6 text-gray-300 ${index !== plans.length - 1 ? 'border-r border-[#c6a255]/20' : ''} hover:bg-[#c6a255]/5 transition-colors duration-300`}>
+                      {plan.name === "Essentials" && "Email Support"}
+                      {plan.name === "Accelerator" && "Email + Chat"}
+                      {plan.name === "Domination" && "Priority Support"}
+                      {plan.name === "Elite" && "24/7 Dedicated Support"}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </LuxuryCard>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 max-w-[1440px] mx-auto px-4">

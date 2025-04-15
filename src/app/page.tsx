@@ -46,16 +46,37 @@ export default function Home() {
   const handleTestimonialScroll = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
       setCurrentTestimonialIndex(prev => 
-        prev === 0 ? testimonials.length - 1 : prev - 1
+        prev === 0 ? Math.max(testimonials.length - visibleCount, 0) : prev - 1
       );
     } else {
       setCurrentTestimonialIndex(prev => 
-        prev + 1 >= testimonials.length ? 0 : prev + 1
+        prev >= testimonials.length - visibleCount ? 0 : prev + 1
       );
     }
   };
 
   const portfolio = [
+    {
+      title: "ChainWallet",
+      description: "Modern crypto wallet platform with seamless SSO integration",
+      image: "https://res.cloudinary.com/sanganak/image/upload/v1744705146/Chainwallet_ki4bvh.png",
+      tags: ["Webflow", "Web3", "Crypto", "Authentication"],
+      caseStudyLink: "#"
+    },
+    {
+      title: "Realtor",
+      description: "Premium real estate platform with advanced property search",
+      image: "https://res.cloudinary.com/sanganak/image/upload/v1744705146/Realtor_apikwi.png",
+      tags: ["Webflow", "Real Estate", "Property Search", "Booking System"],
+      caseStudyLink: "#"
+    },
+    {
+      title: "Beam Analytics",
+      description: "Data analytics SaaS platform with real-time insights",
+      image: "https://res.cloudinary.com/sanganak/image/upload/v1744705145/Torch_qikktc.png",
+      tags: ["Webflow", "SaaS", "Analytics", "Dashboard"],
+      caseStudyLink: "#"
+    },
     {
       title: "Creators Home",
       description: "SaaS platform revolutionizing content creation with AI-powered tools, analytics, and monetization solutions for digital creators.",
@@ -151,7 +172,7 @@ export default function Home() {
       name: "Rahul Verma",
       role: "@TechStart",
       rating: 5,
-      content: "Sanganak Premium transformed our digital presence with their innovative approach and attention to detail. The results speak for themselves.",
+      content: "3x revenue growth in 6 months! Their AI-powered solutions transformed our entire business model. Absolutely phenomenal work.",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1e7220bb89?w=200&h=200&fit=crop&q=80",
       type: "text"
     },
@@ -159,7 +180,7 @@ export default function Home() {
       name: "Priya Singh",
       role: "@LuxeFashion",
       rating: 5,
-      content: "Working with Sanganak Premium was a pleasure. Their team's dedication to quality and understanding of luxury branding is unmatched.",
+      content: "Our conversion rate jumped 150% after the redesign. The attention to luxury details and user experience is simply unmatched.",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&q=80",
       type: "text"
     },
@@ -167,7 +188,7 @@ export default function Home() {
       name: "Aarav Patel",
       role: "@FinTechPro",
       rating: 5,
-      content: "The level of professionalism and technical expertise at Sanganak Premium is truly remarkable. They delivered beyond our expectations.",
+      content: "Delivered our MVP in just 7 days. The quality and speed of execution is remarkable. Worth every penny and more.",
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&q=80",
       type: "text"
     },
@@ -175,7 +196,7 @@ export default function Home() {
       name: "Meera Kapoor",
       role: "@LuxeInteriors",
       rating: 5,
-      content: "Sanganak Premium's understanding of luxury aesthetics and user experience is exceptional. They've helped us create a truly premium digital presence.",
+      content: "2.5x increase in client acquisitions within 3 months. Their premium design approach perfectly aligns with our luxury market.",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&q=80",
       type: "text"
     }
@@ -221,69 +242,45 @@ export default function Home() {
       description: "Providing unparalleled attention and dedication to every aspect of your project."
     }
   ];
-  const [playingVideos, setPlayingVideos] = useState<boolean[]>([]);
+  const [playingVideos, setPlayingVideos] = useState<{[key: number]: boolean}>({});
   const [isMovementPaused, setIsMovementPaused] = useState(false);
   const [centeredCardIndex, setCenteredCardIndex] = useState<number | null>(null);
+
+  // Calculate visible testimonials based on current index and window width
+  const visibleCount = getVisibleItems(windowWidth);
+  const visibleTestimonials = testimonials.slice(
+    currentTestimonialIndex,
+    currentTestimonialIndex + visibleCount
+  );
+
+  const handleVideoEnd = (index: number) => {
+    setPlayingVideos(prev => ({
+      ...prev,
+      [index]: false
+    }));
+  };
 
   const toggleVideo = (e: React.MouseEvent, index: number) => {
     e.preventDefault();
     e.stopPropagation();
     const video = document.getElementById(`testimonial-video-${index}`) as HTMLVideoElement;
-    const container = document.querySelector('.testimonials-container') as HTMLElement;
-    const card = document.querySelector(`[data-card-index="${index}"]`) as HTMLElement;
     
     if (video) {
       if (video.paused) {
         video.play();
-        setIsMovementPaused(true);
-        setCenteredCardIndex(index);
-        if (container && card) {
-          container.style.animationPlayState = 'paused';
-          // Center the card
-          const containerRect = container.getBoundingClientRect();
-          const cardRect = card.getBoundingClientRect();
-          const scrollLeft = card.offsetLeft - (containerRect.width / 2) + (cardRect.width / 2);
-          container.scrollLeft = scrollLeft;
-        }
+        setPlayingVideos(prev => ({
+          ...prev,
+          [index]: true
+        }));
       } else {
         video.pause();
-        setIsMovementPaused(false);
-        setCenteredCardIndex(null);
-        if (container) {
-          container.style.animationPlayState = 'running';
-        }
+        setPlayingVideos(prev => ({
+          ...prev,
+          [index]: false
+        }));
       }
-      setPlayingVideos(prev => {
-        const newState = [...prev];
-        newState[index] = !prev[index];
-        return newState;
-      });
     }
   };
-
-  // Add event listener for video end
-  useEffect(() => {
-    const videos = document.querySelectorAll('video');
-    const container = document.querySelector('.testimonials-container') as HTMLElement;
-
-    const handleVideoEnd = () => {
-      setIsMovementPaused(false);
-      setCenteredCardIndex(null);
-      if (container) {
-        container.style.animationPlayState = 'running';
-      }
-    };
-
-    videos.forEach(video => {
-      video.addEventListener('ended', handleVideoEnd);
-    });
-
-    return () => {
-      videos.forEach(video => {
-        video.removeEventListener('ended', handleVideoEnd);
-      });
-    };
-  }, []);
 
   // Update container animation based on movement state
   useEffect(() => {
@@ -507,34 +504,18 @@ export default function Home() {
                     className="flex gap-8 items-center py-4"
                   >
                     {[
-                      { name: "Creators Home", logo: "/client-logos/creatorshome.png" },
-                      { name: "NFTCollect", logo: "/client-logos/nftcollect.png" },
-                      { name: "Burgerrr", logo: "/client-logos/burgerrr.png" },
-                      { name: "Interio", logo: "/client-logos/interio.png" },
-                      { name: "GlobalEats", logo: "/client-logos/globaleats.png" },
-                      { name: "MedicoBuddy", logo: "/client-logos/medicobuddy.png" }
+                      { name: 'NFTCollect', logo: '/client-logos/nftcollect.png' },
+                      { name: 'GlobalEats', logo: '/client-logos/globaleats.png' },
+                      { name: 'Interio', logo: '/client-logos/interio.png' },
+                      { name: 'MedicoBuddy', logo: '/client-logos/medicobuddy.png' },
+                      { name: 'Burgerrr', logo: '/client-logos/burgerrr.png' },
+                      { name: 'CreatorsHome', logo: '/client-logos/creatorshome.png' },
+                      { name: 'NFTCollect', logo: '/client-logos/nftcollect.png' },
+                      { name: 'GlobalEats', logo: '/client-logos/globaleats.png' },
+                      { name: 'Interio', logo: '/client-logos/interio.png' },
+                      { name: 'MedicoBuddy', logo: '/client-logos/medicobuddy.png' }
                     ].map((client, index) => (
                       <div key={index} className="flex-none w-[240px] h-[100px] relative">
-                        <Image
-                          src={client.logo}
-                          alt={client.name}
-                          fill
-                          sizes="240px"
-                          className="object-contain opacity-80 hover:opacity-100 transition-opacity duration-300 hover:scale-105 transform duration-300"
-                          priority={true}
-                        />
-                      </div>
-                    ))}
-                    {/* Duplicate set for seamless loop */}
-                    {[
-                      { name: "Creators Home", logo: "/client-logos/creatorshome.png" },
-                      { name: "NFTCollect", logo: "/client-logos/nftcollect.png" },
-                      { name: "Burgerrr", logo: "/client-logos/burgerrr.png" },
-                      { name: "Interio", logo: "/client-logos/interio.png" },
-                      { name: "GlobalEats", logo: "/client-logos/globaleats.png" },
-                      { name: "MedicoBuddy", logo: "/client-logos/medicobuddy.png" }
-                    ].map((client, index) => (
-                      <div key={`duplicate-${index}`} className="flex-none w-[240px] h-[100px] relative">
                         <Image
                           src={client.logo}
                           alt={client.name}
@@ -705,33 +686,33 @@ export default function Home() {
             {/* First Row - Moves Left */}
                   <motion.div
               initial={{ x: 0 }}
-              whileInView={{ x: "-100%" }}
+              whileInView={{ x: "-50%" }}
               transition={{ 
                 duration: 30, 
                 ease: "linear",
-                repeatType: "loop"
+                repeat: Infinity
               }}
               viewport={{ once: false }}
-              className="flex gap-6 mt-16 mb-8 w-max"
+              className="flex gap-6 mt-16 mb-2 w-max"
             >
-              {[...portfolio, ...portfolio].map((project, index) => (
+              {[...portfolio.slice(0, 5), ...portfolio.slice(0, 5)].map((project, index) => (
                 <motion.div
                   key={`row1-${project.title}-${index}`}
                   className="w-[500px] flex-shrink-0"
                   whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
                   >
                     <Link href={project.caseStudyLink}>
-                    <LuxuryCard className="overflow-hidden h-full hover:border-luxury-gold-300/30 transition-all duration-300 group p-0">
-                      <div className="relative aspect-[16/10] w-full">
+                    <div className="relative w-full h-[300px] overflow-hidden rounded-2xl border border-luxury-gold-300/20 group hover:border-luxury-gold-300/30 transition-all duration-300">
+                      <div className="relative w-full h-full">
                         <Image
-                            src={project.image}
+                          src={project.image}
                           alt={project.title}
                           fill
                           sizes="500px"
                           className="object-cover transform group-hover:scale-110 transition-transform duration-700 brightness-110"
                           priority={index < 2}
                         />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 transform group-hover:scale-105 transition-transform duration-300">
                         <h3 className="text-lg font-bold text-luxury-gold-100 mb-2 group-hover:text-luxury-gold-300 transition-colors">
@@ -751,7 +732,7 @@ export default function Home() {
                           ))}
                         </div>
                       </div>
-                    </LuxuryCard>
+                    </div>
                     </Link>
                   </motion.div>
                 ))}
@@ -759,25 +740,25 @@ export default function Home() {
 
             {/* Second Row - Moves Right */}
             <motion.div 
-              initial={{ x: "-100%" }}
+              initial={{ x: "-50%" }}
               whileInView={{ x: 0 }}
               transition={{ 
                 duration: 30, 
                 ease: "linear",
-                repeatType: "loop"
+                repeat: Infinity
               }}
               viewport={{ once: false }}
               className="flex gap-6 w-max"
             >
-              {[...portfolio.slice(2), ...portfolio.slice(2)].map((project, index) => (
+              {[...portfolio.slice(5, 9), ...portfolio.slice(5, 9)].map((project, index) => (
                 <motion.div
                   key={`row2-${project.title}-${index}`}
                   className="w-[500px] flex-shrink-0"
                   whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
                 >
                   <Link href={project.caseStudyLink}>
-                    <LuxuryCard className="overflow-hidden h-full hover:border-luxury-gold-300/30 transition-all duration-300 group p-0">
-                      <div className="relative aspect-[16/10] w-full">
+                    <div className="relative w-full h-[300px] overflow-hidden rounded-2xl border border-luxury-gold-300/20 group hover:border-luxury-gold-300/30 transition-all duration-300">
+                      <div className="relative w-full h-full">
                         <Image
                           src={project.image}
                           alt={project.title}
@@ -786,8 +767,8 @@ export default function Home() {
                           className="object-cover transform group-hover:scale-110 transition-transform duration-700 brightness-110"
                           priority={index < 2}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-            </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
+                      </div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 transform group-hover:scale-105 transition-transform duration-300">
                         <h3 className="text-lg font-bold text-luxury-gold-100 mb-2 group-hover:text-luxury-gold-300 transition-colors">
                           {project.title}
@@ -804,9 +785,9 @@ export default function Home() {
                               {tag}
                             </span>
                           ))}
-                        </div>
+            </div>
                       </div>
-                    </LuxuryCard>
+                    </div>
                   </Link>
                 </motion.div>
               ))}
@@ -922,7 +903,7 @@ export default function Home() {
 
             {/* Freelancers Card */}
             <LuxuryCard className="lg:col-span-3 p-6 bg-black/40 backdrop-blur-sm border border-[#c6a255]/10 h-[400px] flex flex-col">
-              <h3 className="text-2xl font-bold text-gray-400 mb-6">Freelancers</h3>
+              <h3 className="text-2xl font-bold text-white mb-6">Freelancers</h3>
               <ul className="space-y-6 flex-1">
                 <li className="flex items-start gap-3">
                   <span className="text-red-500 text-xl flex-shrink-0">✕</span>
@@ -949,7 +930,7 @@ export default function Home() {
 
             {/* Agencies Card */}
             <LuxuryCard className="lg:col-span-3 p-6 bg-black/40 backdrop-blur-sm border border-[#c6a255]/10 h-[400px] flex flex-col">
-              <h3 className="text-2xl font-bold text-gray-400 mb-6">Agencies</h3>
+              <h3 className="text-2xl font-bold text-white mb-6">Agencies</h3>
               <ul className="space-y-6 flex-1">
                 <li className="flex items-start gap-3">
                   <span className="text-red-500 text-xl flex-shrink-0">✕</span>
@@ -976,7 +957,7 @@ export default function Home() {
 
             {/* Full-time Card */}
             <LuxuryCard className="lg:col-span-3 p-6 bg-black/40 backdrop-blur-sm border border-[#c6a255]/10 h-[400px] flex flex-col">
-              <h3 className="text-2xl font-bold text-gray-400 mb-6">Full-time</h3>
+              <h3 className="text-2xl font-bold text-white mb-6">Full-time</h3>
               <ul className="space-y-6 flex-1">
                 <li className="flex items-start gap-3">
                   <span className="text-red-500 text-xl flex-shrink-0">✕</span>
@@ -1030,159 +1011,69 @@ export default function Home() {
           </div>
         </section>
         {/* Testimonials Section */}
-        <section id="testimonials" className="relative py-24 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-16">
+        <section className="relative py-24 bg-gradient-to-b from-black to-black/95 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-16">
               <LuxuryHeading
                 title="Client Stories"
                 subtitle="Hear from our distinguished clients"
               />
-            </div>
-           
-            {/* Video Testimonials Row - Moves Left */}
-            <motion.div 
-              initial={{ x: 0 }}
-              animate={{ x: "-100%" }}
-              transition={{ 
-                duration: 30, 
-                ease: "linear",
-                repeatType: "loop"
-              }}
-              viewport={{ once: false }}
-              className="flex gap-6 mt-16 mb-8 w-max"
-            >
-              {[...videoTestimonials, ...videoTestimonials].map((testimonial, index) => (
-                <motion.div
-                  key={`video-${testimonial.name}-${index}`}
-                  className="w-[350px] flex-shrink-0"
-                  data-card-index={index}
-                  whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-                  onHoverStart={() => {
-                    const container = document.querySelector('.testimonials-container') as HTMLElement;
-                    if (container) {
-                      container.style.animationPlayState = 'paused';
-                    }
-                  }}
-                  onHoverEnd={() => {
-                    const container = document.querySelector('.testimonials-container') as HTMLElement;
-                    if (container) {
-                      container.style.animationPlayState = 'running';
-                    }
-                  }}
-                >
-                  <LuxuryCard className="overflow-hidden h-full hover:border-luxury-gold-300/30 transition-all duration-300 group p-0">
-                    <div 
-                      className="relative aspect-[3/4] w-full"
-                      onMouseEnter={(e) => handleHover(e, index)}
-                      onMouseLeave={(e) => handleHoverEnd(e, index)}
-                    >
+            
+            <div className="relative mt-16">
+              <motion.div 
+                className="flex gap-8 overflow-hidden justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                {visibleTestimonials.map((testimonial, index) => (
+                  <motion.div
+                    key={currentTestimonialIndex + index}
+                    className="w-[300px] flex-shrink-0"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <LuxuryCard className="overflow-hidden group hover:border-luxury-gold-300/30 transition-all duration-300 p-0 bg-black/40">
+                      <div className="relative aspect-[3/4]">
+                        {testimonial.type === 'video' ? (
+                          <>
                             <video
                               id={`testimonial-video-${index}`}
+                              className="w-full h-full object-cover"
                               src={testimonial.videoUrl}
-                        className="absolute inset-0 w-full h-full object-cover z-30"
-                              playsInline
-                              loop
-                        preload="auto"
-                        poster={testimonial.avatar}
-                              onClick={(e) => toggleVideo(e, index)}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-20" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between z-40">
-                            <div className="flex items-center gap-3">
-                              <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                                <Image
-                                  src={testimonial.avatar}
-                                  alt={testimonial.name}
-                                  fill
-                              className="object-cover"
-                                />
-                              </div>
-                              <div className="flex-1">
-                                <div className="flex items-center gap-1 mb-1">
-                              {[...Array(testimonial.rating)].map((_, i) => (
-                                <svg
-                                  key={i}
-                                  className="w-4 h-4 text-luxury-gold-300"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                  ))}
-                                </div>
-                                <h4 className="font-semibold text-[#c6a255]">{testimonial.name}</h4>
-                                <p className="text-sm text-gray-400">{testimonial.role}</p>
-                              </div>
-                            </div>
+                              onEnded={() => handleVideoEnd(index)}
+                            />
                             <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggleVideo(e, index);
-                          }}
-                          className="w-12 h-12 rounded-full bg-[#c6a255]/90 text-black flex items-center justify-center transition-all transform hover:scale-110 hover:bg-[#c6a255] cursor-pointer"
+                              onClick={(e) => toggleVideo(e, index)}
+                              className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors"
                             >
+                              <div className="w-20 h-20 rounded-full bg-luxury-gold-300/90 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
                               {playingVideos[index] ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-                                </svg>
+                                  <Pause className="w-8 h-8 text-black" />
                               ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347c-.75.412-1.667-.13-1.667-.986V5.653z" />
-                                </svg>
+                                  <Play className="w-8 h-8 text-black ml-1" />
                               )}
+                              </div>
                             </button>
-                      </div>
-                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30">
-                              <div className={`h-full bg-[#c6a255] transition-all duration-300 ${playingVideos[index] ? 'w-full' : 'w-0'}`} />
+                          </>
+                        ) : (
+                          <div className="relative h-full bg-black/40">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+                              <p className="text-lg text-luxury-gold-300 text-center font-medium italic leading-relaxed">
+                                "{testimonial.content}"
+                              </p>
                             </div>
                           </div>
-                  </LuxuryCard>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Text Testimonials Row - Moves Right */}
-            <motion.div 
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              transition={{ 
-                duration: 30, 
-                ease: "linear",
-                repeatType: "loop"
-              }}
-              viewport={{ once: false }}
-              className="flex gap-6 w-max"
-            >
-              {[...textTestimonials, ...textTestimonials].map((testimonial, index) => (
-                <motion.div
-                  key={`text-${testimonial.name}-${index}`}
-                  className="w-[350px] flex-shrink-0"
-                >
-                  <LuxuryCard className="overflow-hidden h-full hover:border-luxury-gold-300/30 transition-all duration-300 group p-0">
-                    <div className="relative aspect-[3/4] w-full bg-gradient-to-br from-luxury-gold-900/30 to-luxury-gold-900/10 transform group-hover:scale-105 transition-transform duration-700">
-                      <div className="absolute inset-0 flex items-center justify-center p-8">
-                        <p className="text-luxury-gold-100 text-lg italic text-center">
-                          "{testimonial.content}"
-                        </p>
-                      </div>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 transform group-hover:scale-105 transition-transform duration-300">
-                            <div className="flex items-center gap-3">
-                              <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                                <Image
-                                  src={testimonial.avatar}
-                                  alt={testimonial.name}
-                                  fill
-                            className="object-cover"
-                                />
+                        )}
                               </div>
-                              <div className="flex-1">
-                                <div className="flex items-center gap-1 mb-1">
+                      
+                      <div className="p-4">
+                        <div className="flex flex-col items-center">
+                          <div className="flex items-center gap-1 mb-3">
                             {[...Array(testimonial.rating)].map((_, i) => (
                               <svg
                                 key={i}
-                                className="w-4 h-4 text-luxury-gold-300"
+                                className="w-5 h-5 text-luxury-gold-300"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -1190,15 +1081,31 @@ export default function Home() {
                                     </svg>
                                   ))}
                                 </div>
-                                <h4 className="font-semibold text-[#c6a255]">{testimonial.name}</h4>
-                                <p className="text-sm text-gray-400">{testimonial.role}</p>
+                          <div className="flex flex-col items-center">
+                            <h4 className="font-semibold text-luxury-gold-300 text-lg">{testimonial.name}</h4>
+                            <p className="text-sm text-luxury-gold-300/70">{testimonial.role}</p>
                               </div>
                             </div>
                           </div>
                     </LuxuryCard>
-                </motion.div>
-              ))}
-            </motion.div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              <button
+                onClick={() => handleTestimonialScroll('prev')}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 p-3 rounded-full border border-luxury-gold-300/20 hover:border-luxury-gold-300/40 transition-all duration-300"
+              >
+                <ChevronLeft className="w-6 h-6 text-luxury-gold-300" />
+              </button>
+
+              <button
+                onClick={() => handleTestimonialScroll('next')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 p-3 rounded-full border border-luxury-gold-300/20 hover:border-luxury-gold-300/40 transition-all duration-300"
+              >
+                <ChevronRight className="w-6 h-6 text-luxury-gold-300" />
+              </button>
+            </div>
           </div>
         </section>
         {/* Testimonials CTA */}
