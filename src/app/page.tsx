@@ -511,10 +511,16 @@ export default function Home() {
                       { name: 'MedicoBuddy', logo: '/client-logos/medicobuddy.png' },
                       { name: 'Burgerrr', logo: '/client-logos/burgerrr.png' },
                       { name: 'CreatorsHome', logo: '/client-logos/creatorshome.png' },
+                      { name: 'Realtor', logo: '/client-logos/Realtor.png' },
+                      { name: 'Beam', logo: '/client-logos/Beam.png' },
                       { name: 'NFTCollect', logo: '/client-logos/nftcollect.png' },
                       { name: 'GlobalEats', logo: '/client-logos/globaleats.png' },
                       { name: 'Interio', logo: '/client-logos/interio.png' },
-                      { name: 'MedicoBuddy', logo: '/client-logos/medicobuddy.png' }
+                      { name: 'MedicoBuddy', logo: '/client-logos/medicobuddy.png' },
+                      { name: 'Burgerrr', logo: '/client-logos/burgerrr.png' },
+                      { name: 'CreatorsHome', logo: '/client-logos/creatorshome.png' },
+                      { name: 'Realtor', logo: '/client-logos/Realtor.png' },
+                      { name: 'Beam', logo: '/client-logos/Beam.png' }
                     ].map((client, index) => (
                       <div key={index} className="flex-none w-[240px] h-[100px] relative">
                         <Image
