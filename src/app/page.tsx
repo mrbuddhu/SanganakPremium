@@ -154,7 +154,7 @@ export default function Home() {
       name: "Shyam Sharma",
       role: "@Interio",
       rating: 5,
-      content: "The Sanganak team's expertise in luxury design transformed our digital presence. Their collaborative approach and attention to detail made the entire process seamless.",
+      content: "Unlike traditional agencies, Sanganak delivered our MVP in just 7 days with fixed pricing and 24/7 support. Their premium project management and full-stack expertise made all the difference.",
       avatar: "/testimonials/headshots/shyam-sharma.jpg",
       type: "text"
     },
