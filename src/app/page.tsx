@@ -267,7 +267,9 @@ export default function Home() {
     
     if (video) {
       if (video.paused) {
-        video.play();
+        video.play().catch(error => {
+          console.error("Error playing video:", error);
+        });
         setPlayingVideos(prev => ({
           ...prev,
           [index]: true
@@ -417,7 +419,7 @@ export default function Home() {
                 </motion.div>
               </div>
 
-              <div className="text-center space-y-3 sm:space-y-4 md:space-y-6">
+              <div className="text-center space-y-3 sm:space-y-4 md:space-y-6 mx-auto max-w-[90%] sm:max-w-full">
                 <div>
                   <motion.h1 
                     initial={{ opacity: 0, y: 20 }}
@@ -1012,15 +1014,15 @@ export default function Home() {
         </section>
         {/* Testimonials Section */}
         <section className="relative py-24 bg-gradient-to-b from-black to-black/95 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-16">
-              <LuxuryHeading
-                title="Client Stories"
-                subtitle="Hear from our distinguished clients"
-              />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            <LuxuryHeading
+              title="Client Stories"
+              subtitle="Hear from our distinguished clients"
+            />
             
             <div className="relative mt-16">
               <motion.div 
-                className="flex gap-8 overflow-hidden justify-center"
+                className="flex justify-center items-center gap-4 sm:gap-6 md:gap-8 overflow-x-auto pb-4 px-4 -mx-4 scrollbar-hide"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
@@ -1028,7 +1030,7 @@ export default function Home() {
                 {visibleTestimonials.map((testimonial, index) => (
                   <motion.div
                     key={currentTestimonialIndex + index}
-                    className="w-[300px] flex-shrink-0"
+                    className="w-[280px] sm:w-[300px] flex-shrink-0"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -1042,17 +1044,23 @@ export default function Home() {
                               className="w-full h-full object-cover"
                               src={testimonial.videoUrl}
                               onEnded={() => handleVideoEnd(index)}
+                              playsInline
                             />
                             <button
-                              onClick={(e) => toggleVideo(e, index)}
-                              className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleVideo(e, index);
+                              }}
+                              className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors cursor-pointer z-10"
+                              type="button"
                             >
                               <div className="w-20 h-20 rounded-full bg-luxury-gold-300/90 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                              {playingVideos[index] ? (
+                                {playingVideos[index] ? (
                                   <Pause className="w-8 h-8 text-black" />
-                              ) : (
+                                ) : (
                                   <Play className="w-8 h-8 text-black ml-1" />
-                              )}
+                                )}
                               </div>
                             </button>
                           </>
@@ -1092,19 +1100,48 @@ export default function Home() {
                 ))}
               </motion.div>
 
-              <button
-                onClick={() => handleTestimonialScroll('prev')}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 p-3 rounded-full border border-luxury-gold-300/20 hover:border-luxury-gold-300/40 transition-all duration-300"
-              >
-                <ChevronLeft className="w-6 h-6 text-luxury-gold-300" />
-              </button>
+              <div className="flex justify-center items-center mt-8 gap-3">
+                {testimonials.map((_, index) => {
+                  const isActive = index >= currentTestimonialIndex && index < currentTestimonialIndex + visibleCount;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentTestimonialIndex(index)}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${isActive 
+                        ? 'bg-luxury-gold-300 scale-110' 
+                        : 'bg-luxury-gold-300/30 hover:bg-luxury-gold-300/50'}`}
+                      aria-label={`Go to testimonial ${index + 1}`}
+                    />
+                  );
+                })}
+              </div>
+              
+              <div className="flex justify-center items-center mt-4 gap-4">
+                <button
+                  onClick={() => handleTestimonialScroll('prev')}
+                  className="bg-black/60 hover:bg-black/80 p-2 rounded-full border border-luxury-gold-300/20 hover:border-luxury-gold-300/40 transition-all duration-300"
+                  aria-label="Previous testimonial"
+                >
+                  <ChevronLeft className="w-5 h-5 text-luxury-gold-300" />
+                </button>
 
-              <button
-                onClick={() => handleTestimonialScroll('next')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 p-3 rounded-full border border-luxury-gold-300/20 hover:border-luxury-gold-300/40 transition-all duration-300"
-              >
-                <ChevronRight className="w-6 h-6 text-luxury-gold-300" />
-              </button>
+                <div className="w-32 h-1 bg-luxury-gold-300/20 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-luxury-gold-300 transition-all duration-300"
+                    style={{
+                      width: `${(currentTestimonialIndex / (testimonials.length - visibleCount)) * 100}%`
+                    }}
+                  />
+                </div>
+
+                <button
+                  onClick={() => handleTestimonialScroll('next')}
+                  className="bg-black/60 hover:bg-black/80 p-2 rounded-full border border-luxury-gold-300/20 hover:border-luxury-gold-300/40 transition-all duration-300"
+                  aria-label="Next testimonial"
+                >
+                  <ChevronRight className="w-5 h-5 text-luxury-gold-300" />
+                </button>
+              </div>
             </div>
           </div>
         </section>
