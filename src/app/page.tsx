@@ -1018,7 +1018,7 @@ export default function Home() {
           </div>
         </section>
         {/* Testimonials Section */}
-        <section className="relative py-24 bg-gradient-to-b from-black to-black/95 overflow-hidden">
+        <section id="testimonials" className="relative py-24 bg-gradient-to-b from-black to-black/95 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <LuxuryHeading
               title="Client Stories"
