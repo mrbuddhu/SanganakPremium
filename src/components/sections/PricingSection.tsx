@@ -127,7 +127,7 @@ export default function PricingSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="mt-16 mb-24 overflow-x-auto"
+          className="hidden lg:block mt-16 mb-24 overflow-x-auto"
         >
           <LuxuryCard className="p-0 overflow-hidden">
             <table className="w-full min-w-[800px] border-collapse">
