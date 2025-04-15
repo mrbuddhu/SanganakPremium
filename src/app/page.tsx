@@ -522,16 +522,24 @@ export default function Home() {
                       { name: 'Realtor', logo: '/client-logos/Realtor.png' },
                       { name: 'Beam', logo: '/client-logos/Beam.png' }
                     ].map((client, index) => (
-                      <div key={index} className="flex-none w-[240px] h-[100px] relative">
+                      <motion.div
+                        key={index}
+                        className="flex-none w-[240px] h-[100px] relative group"
+                        whileHover={{ 
+                          scale: 1.05,
+                          transition: { duration: 0.2 }
+                        }}
+                      >
                         <Image
                           src={client.logo}
                           alt={client.name}
                           fill
                           sizes="240px"
-                          className="object-contain opacity-80 hover:opacity-100 transition-opacity duration-300 hover:scale-105 transform duration-300"
+                          className="object-contain opacity-70 group-hover:opacity-100 transition-all duration-300 filter group-hover:brightness-110"
                           priority={true}
                         />
-                      </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </motion.div>
                     ))}
                   </motion.div>
                 </div>
