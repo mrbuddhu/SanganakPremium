@@ -12,6 +12,8 @@ import LuxuryHeading from '../ui/LuxuryHeading';
 // 4. Resources - Documentation aur help ke links
 // 5. Legal - Privacy policy aur terms ke links
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-black text-white pt-8 pb-16 md:pb-12">
       <div className="container mx-auto px-4 md:px-6">
@@ -143,7 +145,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="text-center mt-16 pb-16 md:pb-16">
           <p className="text-[#c6a255] text-sm">
-            2025 Sanganak. A venture of mrbuddhu & msbuddhu Sanganak LLP. All rights reserved.
+            {currentYear} Sanganak. A venture of mrbuddhu & msbuddhu Sanganak LLP. All rights reserved.
           </p>
         </div>
       </div>
