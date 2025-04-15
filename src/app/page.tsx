@@ -694,15 +694,15 @@ export default function Home() {
                 repeat: Infinity
               }}
               viewport={{ once: false }}
-              className="flex gap-6 mt-16 mb-2 w-max"
+              className="flex gap-6 mt-16 mb-8 w-max"
             >
               {[...portfolio.slice(0, 5), ...portfolio.slice(0, 5)].map((project, index) => (
                 <motion.div
                   key={`row1-${project.title}-${index}`}
                   className="w-[500px] flex-shrink-0"
-                  whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-                  >
-                    <Link href={project.caseStudyLink}>
+                  whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                >
+                  <Link href={project.caseStudyLink}>
                     <div className="relative w-full h-[300px] overflow-hidden rounded-2xl border border-luxury-gold-300/20 group hover:border-luxury-gold-300/30 transition-all duration-300">
                       <div className="relative w-full h-full">
                         <Image
@@ -710,22 +710,22 @@ export default function Home() {
                           alt={project.title}
                           fill
                           sizes="500px"
-                          className="object-cover transform group-hover:scale-110 transition-transform duration-700 brightness-110"
+                          className="object-cover brightness-110"
                           priority={index < 2}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 transform group-hover:scale-105 transition-transform duration-300">
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
                         <h3 className="text-lg font-bold text-luxury-gold-100 mb-2 group-hover:text-luxury-gold-300 transition-colors">
-                            {project.title}
+                          {project.title}
                         </h3>
                         <p className="text-gray-300 text-sm mb-3 line-clamp-1">
-                            {project.description}
-                          </p>
+                          {project.description}
+                        </p>
                         <div className="flex flex-wrap gap-2">
-                            {project.tags.map((tag) => (
+                          {project.tags.map((tag) => (
                             <span
-                                key={tag}
+                              key={tag}
                               className="px-2 py-0.5 text-xs bg-luxury-gold-900/30 text-luxury-gold-300 rounded-full border border-luxury-gold-300/10"
                             >
                               {tag}
@@ -734,8 +734,8 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    </Link>
-                  </motion.div>
+                  </Link>
+                </motion.div>
                 ))}
             </motion.div>
 
@@ -749,13 +749,13 @@ export default function Home() {
                 repeat: Infinity
               }}
               viewport={{ once: false }}
-              className="flex gap-6 w-max"
+              className="flex gap-6 mt-12 w-max"
             >
               {[...portfolio.slice(5, 9), ...portfolio.slice(5, 9)].map((project, index) => (
                 <motion.div
                   key={`row2-${project.title}-${index}`}
                   className="w-[500px] flex-shrink-0"
-                  whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
+                  whileHover={{ y: -10, transition: { duration: 0.3 } }}
                 >
                   <Link href={project.caseStudyLink}>
                     <div className="relative w-full h-[300px] overflow-hidden rounded-2xl border border-luxury-gold-300/20 group hover:border-luxury-gold-300/30 transition-all duration-300">
@@ -765,12 +765,12 @@ export default function Home() {
                           alt={project.title}
                           fill
                           sizes="500px"
-                          className="object-cover transform group-hover:scale-110 transition-transform duration-700 brightness-110"
+                          className="object-cover brightness-110"
                           priority={index < 2}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 transform group-hover:scale-105 transition-transform duration-300">
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
                         <h3 className="text-lg font-bold text-luxury-gold-100 mb-2 group-hover:text-luxury-gold-300 transition-colors">
                           {project.title}
                         </h3>
