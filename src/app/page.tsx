@@ -154,7 +154,7 @@ export default function Home() {
       name: "Shyam Sharma",
       role: "@Interio",
       rating: 5,
-      content: "Unlike traditional agencies, Sanganak delivered our MVP in just 7 days with fixed pricing and 24/7 support. Their premium project management and full-stack expertise made all the difference.",
+      content: "Sanganak delivered our MVP in just 7 days. Their premium project management and full-stack expertise made all the difference.",
       avatar: "/testimonials/headshots/shyam-sharma.jpg",
       type: "text"
     },
